@@ -314,14 +314,92 @@ Para evitar la detención total del software ante la pérdida de conexión con u
 ---
 
 ## 4. Resolución de Escenarios Operativos Críticos
-**Programación de Escenarios Operativos:** [Nombre del Integrante 4]  
+**Programación de Escenarios Operativos:** Angel Rodriguez
 
 ### 4.1. Escenario Operativo A: Prevención de Fuga Térmica
 * **Objetivo:** Monitorización iterativa para prevenir el sobrecalentamiento de las baterías.
-* **Lógica Implementada:** *(Tu compañero debe explicar aquí, en lenguaje natural, cómo su script lee la temperatura, y si supera los 55°C, cómo invoca las primitivas para activar refrigeración, desconectar carga solar y desviar consumo a la red comercial)*.
-* **Codigo Fuente:** 
+* **Lógica Implementada:** El programa inicia con la calibración general del sistema a través de `init_grid()`. Se establece un bucle de monitoreo continuo `MIENTRAS` que evalúa constantemente una celda crítica (`bateriaPrincipal`). La telemetría se encapsula en una estructura `INTENTAR` para prever fallas de comunicación con el sensor.
+Si la temperatura supera el umbral estricto de *55.0°C*, el script ejecuta e forma inmediata el protocolo de alivio de carga:
 
+  *1.* Activa mecánicamente los extractores con `activar_refrigeracion()`.
+
+  *2.* Desconecta la captación de energía fotovoltaica (`sensorPaneles1`) cambiando su estado a `apagado` para frenar el ingreso de calor por carga.
+
+  *3.* Desvía el consumo aislando el `sectorIndustrial` (`apagado`) y conectando la `redComercial` de respaldo (`encendido`).
+
+  Posteriormente, el sistema ejecuta una pausa prudencial de 10 segundos con `esperar()`. Si tras este periodo la temperatura se mantiene por encima de los *55.0 °C*, el programa utiliza la instrucción de interrupción forzada `ROMPER` para abortar el ciclo ordinario e ingresar inmediatamente a un estado de bloqueo absoluto, emitiendo una alerta recurrente de nivel `critico` detallando el exceso térmico exacto.
+* **Codigo Fuente:** 
+```eco
+
+init_grid()
+
+monitoreoTermico = encendido
+
+MIENTRAS (monitoreoTermico == encendido) EJECUTAR
+    INTENTAR
+        tempActual = leer_temperatura(bateriaPrincipal)
+        
+        SI (tempActual > 55.0) ENTONCES
+            # 1. Activar refrigeracion y aislar fuentes de calor
+            activar_refrigeracion(bateriaPrincipal)
+            conmutar_linea(sensorPaneles1, apagado)
+            
+            # 2. Desviar el consumo industrial a la red comercial de respaldo
+            conmutar_linea(sectorIndustrial, apagado)
+            conmutar_linea(redComercial, encendido)
+            
+            # 3. Periodo de verificacion de persistencia del peligro
+           
+            esperar(10)
+            tempVerificacion = leer_temperatura(bateriaPrincipal)
+            SI (tempVerificacion > 55.0) ENTONCES
+                emitir_alerta(critico, "Peligro persistente de fuga. Abortando ciclo. Exceso: " + (tempVerificacion - 55.0))
+                ROMPER
+            FIN_SI
+        FIN_SI
+    EN_CASO_DE_FALLA
+        emitir_alerta(critico, "Fallo de lectura en sensor termico de: " + bateriaPrincipal)
+    FIN_INTENTAR
+    
+    esperar(60)
+FIN_MIENTRAS
+```
 ### 4.2. Escenario Operativo B: Balance de Carga y Optimización Energética
 * **Objetivo:** Toma de decisiones autónoma para inyectar excedentes o aislar sectores críticos.
-* **Lógica Implementada:** *(Explicar cómo el script evalúa si la carga es >90% para vender energía a la red, o si es <20% de noche, cómo aísla sectores no esenciales para proteger las áreas críticas).*
+* **Lógica Implementada:** El script recopila las variables de entorno actuales (hora militar y métricas de potencia de los componentes). Todo el flujo de evaluación se protege con un bloque `INTENTAR`. El sistema decide autónomamente entre dos estados lógicos excluyentes:
+  * **Condición de Superávit:** Si el almacenamiento de la `bateriaPrincipal` es óptimo (superior al **90%**) **Y** la generación registrada en los paneles (`flujoSolar`) es mayor al consumo demandado por la planta (`demandaInterna`), los relés automáticos se accionan conectando la `redPublica` a estado `encendido` para vender el excedente energético. Se emite un reporte tipo `info`.
+  * **Condición de Contingencia Nocturna:** Si el almacenamiento desciende de un límite crítico (menor al **20%**) **Y** el reloj de la planta se encuentra en horas de alta demanda nocturna (entre las 18 y las 23 horas), el sistema prioriza la seguridad operativa. Ejecuta la desconexión inmediata de los sectores prescindibles (`sectorIndustrial` y `sectorOficinas`) a estado `apagado`. Esto aísla las cargas pesadas, garantizando el suministro remanente de manera exclusiva para las áreas designadas como intocables en el manual de contingencias de la fábrica (`sectorMedico` y `sectorServidores`).
 * **Codigo Fuente:** 
+
+```eco
+init_grid()
+
+horaMilitar = hora_actual()
+
+INTENTAR
+    cargaActual = estado_carga(bateriaPrincipal)
+    flujoSolar = flujo_actual(sensorPaneles1)
+    demandaInterna = flujo_actual(sensorConsumoInterno)
+    
+    # CASO 1: Inyeccion/Venta de excedentes por superavit energetico
+    SI (cargaActual > 90 Y flujoSolar > demandaInterna) ENTONCES
+        conmutar_linea(redPublica, encendido)
+        emitir_alerta(info, "Inyectando excedente a red publica. Potencia: " + (flujoSolar - demandaInterna))
+    FIN_SI
+    
+    # CASO 2: Aislamiento preventivo por baja reserva en horas pico nocturnas
+    SI (cargaActual < 20 Y horaMilitar >= 18 Y horaMilitar <= 23) ENTONCES
+        # Desconectar cargas pesadas no esenciales
+        conmutar_linea(sectorIndustrial, apagado)
+        
+        # Asegurar flujo electrico a las areas criticas de la organizacion
+        conmutar_linea(sectorMedico, encendido)
+        conmutar_linea(sectorServidores, encendido)
+        
+        emitir_alerta(advertencia, "Racionamiento activo. Suministro preservado en areas criticas. Bateria: " + cargaActual)
+    FIN_SI
+EN_CASO_DE_FALLA
+    emitir_alerta(critico, "Error de comunicacion en bus de datos de optimizacion. Protocolo bloqueado.")
+FIN_INTENTAR
+
+```
