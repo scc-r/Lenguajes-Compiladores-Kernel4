@@ -1,47 +1,97 @@
 # ⏱️ Actividad II: Estudio Morfológico, Sintáctico y Benchmarking
-**Desarrollado por:** [Nombre del Integrante 2]
+**Desarrollado por:** [Rayc Yanez]
 
 ## 1. Análisis Morfológico (Léxico) y Sintáctico
 
+**Nota técnica preliminar:** La tokenización analizada en esta sección corresponde a la teoría de lenguajes formales (donde un analizador léxico o *scanner* agrupa secuencias de caracteres en *tokens* o unidades atómicas de significado para el compilador). Este proceso es estrictamente determinista y gramatical, difiriendo por completo de la tokenización probabilística o por sub-palabras empleada en el Procesamiento de Lenguaje Natural (PLN) para modelos de inteligencia artificial.
+
 ### 1.1. Zig
-- **Análisis Morfológico:** *(Describir estructura de tokens, palabras reservadas, reglas de identificadores, literales y uso de delimitadores explícitos)*.
-- **Análisis Sintáctico:** *(Documentar con notación formal o gráfica la jerarquía de bucles, condicionales y subprogramas)*.
+- **Análisis Morfológico:** Zig posee un analizador léxico estricto y minimalista. Sus **palabras reservadas** (como `fn`, `while`, `if`, `else`, `var`, `const`) están limitadas para evitar ambigüedades. Las **reglas de identificadores** exigen comenzar con una letra o guion bajo, seguido de caracteres alfanuméricos (`[a-zA-Z_][a-zA-Z0-9_]*`). Los **literales** numéricos soportan tipado fuerte implícito (ej. `0`, `1`) y los literales de cadena utilizan comillas dobles. Los elementos irrelevantes (espacios en blanco, tabulaciones y saltos de línea) son ignorados por el compilador, ya que Zig depende de **delimitadores explícitos**: utiliza llaves `{}` para definir bloques de alcance léxico (*scope*) y el punto y coma `;` para la terminación de sentencias.
+- **Análisis Sintáctico:** A continuación, la notación formal (EBNF) de las estructuras de control empleadas:
+  ```ebnf
+  <Subprograma> ::= "fn" <Identificador> "(" [ <ListaParametros> ] ")" <TipoRetorno> "{" <BloqueInstrucciones> "}"
+  <BucleWhile>  ::= "while" "(" <ExpresionBooleana> ")" "{" <BloqueInstrucciones> "}"
+  <Condicional> ::= "if" "(" <ExpresionBooleana> ")" "{" <BloqueInstrucciones> "}" 
+                    [ "else" "{" <BloqueInstrucciones> "}" ]
+  ```
 
 ### 1.2. Python
-- **Análisis Morfológico:** *(Describir estructura léxica, resaltando el uso de indentación significativa como delimitador)*.
-- **Análisis Sintáctico:** *(Documentar notación formal de sus estructuras de control)*.
+- **Análisis Morfológico:** El escáner léxico de CPython tiene una característica arquitectónica única: **el espacio en blanco es sintácticamente significativo**. A diferencia de los otros lenguajes evaluados, Python no ignora la indentación; el analizador léxico inyecta *tokens* invisibles llamados `INDENT` y `DEDENT` para marcar el inicio y fin de los bloques, eliminando la necesidad de llaves. Sus **palabras reservadas** incluyen `def`, `while`, `if`, `else`. Los **literales** numéricos son tratados como objetos de precisión arbitraria por defecto. El delimitador explícito principal es los dos puntos `:` que anuncia la apertura de un nuevo bloque indentado.
+- **Análisis Sintáctico:** Representación formal de sus estructuras, destacando la obligatoriedad de los tokens de indentación:
+  ```ebnf
+  <Subprograma> ::= "def" <Identificador> "(" [ <ListaParametros> ] "):" <NUEVA_LINEA> <INDENT> <BloqueInstrucciones> <DEDENT>
+  <BucleWhile>  ::= "while" <ExpresionBooleana> ":" <NUEVA_LINEA> <INDENT> <BloqueInstrucciones> <DEDENT>
+  <Condicional> ::= "if" <ExpresionBooleana> ":" <NUEVA_LINEA> <INDENT> <BloqueInstrucciones> <DEDENT> 
+                    [ "else" ":" <NUEVA_LINEA> <INDENT> <BloqueInstrucciones> <DEDENT> ]
+  ```
 
 ### 1.3. Rust
-- **Análisis Morfológico:** *(Describir tokens, identificadores, literales y delimitadores)*.
-- **Análisis Sintáctico:** *(Documentar notación formal de sus estructuras de control)*.
+- **Análisis Morfológico:** El análisis léxico de Rust está diseñado para garantizar la seguridad de memoria desde la fase de compilación. Las **palabras reservadas** (`fn`, `while`, `if`, `let`, `mut`) definen rígidamente la inmutabilidad por defecto. Las **reglas de identificadores** siguen el estándar alfanumérico ASCII/Unicode. Los **literales** son estrictos e infieren el tipo si no se sufijan (ej. `i32`, `u64`). El tratamiento de elementos irrelevantes es tradicional: los espacios y saltos de línea se ignoran. Utiliza **delimitadores explícitos** (`{}` para bloques y `;` para sentencias). Una particularidad léxica es que el *scanner* no requiere (ni recomienda) paréntesis aislantes alrededor de las expresiones booleanas en sus estructuras de control.
+- **Análisis Sintáctico:** Notación formal evidenciando la ausencia de paréntesis en las condiciones de evaluación:
+  ```ebnf
+  <Subprograma> ::= "fn" <Identificador> "(" [ <ListaParametros> ] ")" [ "->" <TipoRetorno> ] "{" <BloqueInstrucciones> "}"
+  <BucleWhile>  ::= "while" <ExpresionBooleana> "{" <BloqueInstrucciones> "}"
+  <Condicional> ::= "if" <ExpresionBooleana> "{" <BloqueInstrucciones> "}" 
+                    [ "else" ( <Condicional> | "{" <BloqueInstrucciones> "}" ) ]
+  ```
 
 ### 1.4. JavaScript
-- **Análisis Morfológico:** *(Describir tokens, identificadores, literales y delimitadores)*.
-- **Análisis Sintáctico:** *(Documentar notación formal de sus estructuras de control)*.
-
+- **Análisis Morfológico:** El escáner del motor V8 (ECMAScript) es altamente permisivo. Sus **palabras reservadas** empleadas incluyen `function`, `while`, `if`, `let`, `const`. Las **reglas de identificadores** permiten caracteres estándar y símbolos especiales como `$` o `_`. Los **literales** numéricos, históricamente, se tokenizan siempre como flotantes de doble precisión (IEEE 754), a menos que se declare explícitamente el sufijo `n` para *BigInt*. Emplea **delimitadores explícitos** (`{}` para bloques). Una característica crítica de su analizador léxico es el mecanismo ASI (*Automatic Semicolon Insertion*), donde el compilador infiere e inyecta virtualmente el delimitador `;` al final de una línea si el programador lo omite, aunque el espacio en blanco en general sea ignorado.
+- **Análisis Sintáctico:** Notación formal de la jerarquía de estructuras de control en su paradigma base:
+  ```ebnf
+  <Subprograma> ::= "function" <Identificador> "(" [ <ListaParametros> ] ")" "{" <BloqueInstrucciones> "}"
+  <BucleWhile>  ::= "while" "(" <ExpresionBooleana> ")" "{" <BloqueInstrucciones> "}"
+  <Condicional> ::= "if" "(" <ExpresionBooleana> ")" <InstruccionOBloque> 
+                    [ "else" <InstruccionOBloque> ]
+  ```
 ---
 
 ## 2. Benchmarking en Procesamiento Intensivo
 
-**Algoritmo Seleccionado:** *(Indicar si es Blockchain, Ecuación de 2do grado (n=200) o Conjetura de Collatz (n>50))*
+**Algoritmo Seleccionado:** Conjetura de Collatz aplicando un límite estricto de estrés de **10,000,000 de iteraciones** consecutivas (evaluando los enteros en el rango de $1$ a $10^7$). Cada lenguaje calcula la longitud de la secuencia matemática para cada elemento y actualiza el registro de la longitud máxima encontrada de forma secuencial.
+* **Resultado de control (Secuencia máxima validada):** `685` pasos (idéntico en los cuatro entornos, lo que valida la integridad matemática del escenario de pruebas).
+
 **Entorno de Pruebas (Hardware/Software):**
-- **CPU:** *(Ej. AMD Ryzen 5 5600X)*
-- **Memoria RAM:** *(Ej. 16GB DDR4)*
-- **Sistema Operativo:** *(Ej. Windows 11 / Ubuntu 22.04)*
+* **Arquitectura del Sistema:** Computador portátil HP ProBook 450 G6
+* **CPU:** Intel Core i5-8265U @ 1.60GHz (hasta 3.90 GHz con Turbo Boost, 4 núcleos / 8 hilos)
+* **Memoria RAM:** 16GB DDR4 @ 2400 MHz
+* **Sistema Operativo:** Windows 11 Pro (64 bits)
+* **Metodología de Medición:** * *Métricas Internas:* Capturadas mediante APIs nativas de introspección de cada lenguaje (`time.perf_counter()` y `tracemalloc` en Python; `performance.now()` y `process.memoryUsage().heapUsed` en JavaScript/Node.js; `std.time.Instant` en Rust).
+  * *Métricas Externas (OS):* Auditadas mediante un script de supervisión en `PowerShell` ejecutado de manera concurrente, capturando la propiedad de hardware `WorkingSet64` (RAM física asignada al proceso) con un intervalo de muestreo agresivo de 10 milisegundos y un cronómetro de precisión de la clase `System.Diagnostics.Stopwatch`.
 
-### 2.1. Tabla de Tiempos y Memoria
+---
 
-| Lenguaje de Programación | Paradigma Dominante | Mecanismo de Ejecución y Compilación | Tiempo de Ejecución Promedio (ms) | Consumo de Memoria Pico (MB) |
-| :--- | :--- | :--- | :--- | :--- |
-| **Zig** | Imperativo / Estructurado | Compilación Nativa (LLVM) | *[Dato]* | *[Dato]* |
-| **Python** | Multiparadigma (OO, Imperativo) | Interpretado (CPython / VM) | *[Dato]* | *[Dato]* |
-| **Rust** | Multiparadigma (Funcional, Imperativo) | Compilación Nativa (LLVM) | *[Dato]* | *[Dato]* |
-| **JavaScript** | Multiparadigma (Prototípico, Funcional) | JIT (Just-In-Time) / V8 Engine | *[Dato]* | *[Dato]* |
+### 2.1. Tabla de Tiempos y Memoria (Matriz Empírica)
+
+| Lenguaje de Programación | Paradigma Dominante | Mecanismo de Ejecución y Compilación | Tiempo de Ejecución Interno (ms) | Tiempo de Ejecución Real OS (ms) | Consumo de Memoria Interno (Heap) | Consumo de Memoria Pico Real OS |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Zig** | Imperativo / Estructurado | Compilación Nativa (LLVM - O ReleaseFast) | *N/D* | 1,408.49 ms | 0.00 MB | 3.04 MB |
+| **Rust** | Multiparadigma | Compilación Nativa (LLVM - O) | 1,472.96 ms | 1,491.01 ms | 0.00 MB | 4.31 MB |
+| **JavaScript** | Multiparadigma | Compilación JIT / V8 Engine (Node.js) | 16,730.80 ms | 16,810.30 ms | 4.70 MB | 39.05 MB |
+| **Python** | Multiparadigma | Interpretado Puro (CPython / VM) | 1,574,755.27 ms | 1,574,808.59 ms | 0.00 MB | 11.89 MB |
+
+*(Nota: N/D indica que el lenguaje se ejecuta nativamente sobre el hardware y el binario no inyecta telemetría interna por diseño para evitar sobrecostos de procesamiento).*
+
+---
 
 ### 2.2. Gráfica de Rendimiento
 *(Insertar aquí la imagen de la gráfica comparativa generada a partir de los datos de la tabla, tal como lo sugiere el profesor)*.
 
-### 2.3. Análisis Técnico
-*(Redactar el análisis comparativo discutiendo el impacto de la arquitectura de cada lenguaje, la máquina virtual vs. compilación nativa, y el manejo de memoria en los resultados obtenidos)*.
+### 2.3. Análisis Técnico y Discusión de Resultados
 
-> **Nota para la entrega:** Los códigos fuente funcionales y las instrucciones de configuración (README) se encuentran adjuntos en el directorio `/actividad_2_benchmarking/src` del repositorio del Grupo 1.
+El estudio empírico revela un comportamiento asimétrico altamente dependiente de la arquitectura interna de los lenguajes evaluados, evidenciando una paradoja notable al contrastar las métricas de consumo de memoria internas contra las externas del sistema operativo.
+
+#### 1. El Impacto de la Compilación Nativa (Zig y Rust)
+Zig y Rust exhiben una eficiencia superior con tiempos de ejecución inferiores a los 1.5 segundos. Ambos lenguajes emplean **LLVM** como infraestructura de compilación (*backend*). Al procesar un bucle matemático puro e iterativo, el optimizador de LLVM traduce las estructuras de control directamente a instrucciones vectorizadas u optimizadas a nivel de registro de CPU en lenguaje ensamblador x86_64. 
+
+Respecto a la memoria, ambos registran **0.00 MB de uso en el Heap interno** debido a que la complejidad espacial del algoritmo es constante $O(1)$; las variables numéricas mutan dentro de registros de la CPU o en el marco de activación de la pila (*Stack*). Sin embargo, al auditar el proceso desde el sistema operativo, Windows asigna **3.04 MB a Zig** y **4.31 MB a Rust**. Este diferencial externo representa el *Working Set* mínimo obligatorio para cargar la imagen binaria en memoria física, inicializar las librerías del sistema y mapear los manejadores de entrada/salida estándar para imprimir en la consola. Rust resulta ligeramente más pesado debido a la inclusión nativa de metadatos de seguridad y funciones de gestión de fallos catastróficos (*panic handlers*).
+
+#### 2. La Paradoja de la Memoria en JavaScript (Node.js) vs. Python
+El análisis cruzado entre JavaScript y Python desvela el fenómeno más relevante del experimento, donde las métricas de memoria internas y externas se comportan de manera inversa:
+
+* **JavaScript (Node.js / Motor V8):** Internamente declara un consumo en el Heap de **4.70 MB**, pero externamente el sistema operativo registra un pico masivo de **39.05 MB** (el más alto de la prueba). Esto obedece a la naturaleza del motor de compilación en tiempo real **Just-In-Time (JIT)**. Al detectar que el bucle se ejecuta millones de veces (*hot code*), el optimizador de V8 entra en funcionamiento concurrente, consumiendo memoria RAM del sistema operativo para almacenar el código máquina compilado sobre la marcha. Los 4.70 MB internos corresponden a las estructuras de datos nativas del motor, mientras que los ~34 MB de sobrecosto representan el peso de toda la infraestructura V8 instanciada en Windows. Gracias a este costo espacial, logra resolver la prueba en apenas ~16.8 segundos.
+
+* **Python (CPython):** Registra un consumo interno perfecto de **0.00 MB** en el Heap, pero su tiempo de ejecución se degrada exponencialmente hasta alcanzar los **26.24 minutos** (1,574,808.59 ms). CPython es un intérprete puro que opera mediante una Máquina Virtual basada en *Bytecode*. No implementa optimización JIT por defecto, de modo que evalúa y ejecuta cada línea del ciclo de forma secuencial y redundante. La asignación interna de 0.00 MB se debe a su motor de gestión de memoria basado en **Conteo de Referencias (*Reference Counting*)**. Al actualizar el valor de la variable de cálculo intermedio (`n`), el intérprete destruye inmediatamente el objeto numérico anterior en memoria en un lapso de microsegundos, manteniendo un perfil de datos dinámicos plano. No obstante, externamente el sistema operativo reporta un consumo base de **11.89 MB**, correspondiente estrictamente al peso estático del binario ejecutable del intérprete de Python cargado en memoria RAM.
+
+#### 3. Conclusión Arquitectónica
+Los datos empíricos demuestran que los entornos gestionados (máquinas virtuales e intérpretes) introducen un sobrecosto de recursos que no está vinculado a la lógica del algoritmo, sino a la supervivencia del propio entorno de ejecución. Para cargas de procesamiento matemático puro y masivo, la abstracción y comodidad de lenguajes de alto nivel como Python se traduce en una penalización de rendimiento de casi **1,100 veces en tiempo** en comparación con soluciones nativas basadas en control estricto de memoria como Zig y Rust.
