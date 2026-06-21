@@ -7,7 +7,8 @@ En el diseño de compiladores, no basta con que una gramática genere matemátic
 
 1.1. Gramática Ambigua
 
-Concepto Teórico: Una gramática se considera ambigua si existe al menos una cadena válida que puede ser generada mediante dos o más árboles de derivación distintos. Esto es un error crítico en ingeniería de software, ya que el compilador tendría múltiples interpretaciones semánticas para una misma línea de código.
+Concepto Teórico: Una gramática se considera ambigua si existe al menos una cadena válida que puede ser generada mediante dos o más árboles de derivación distintos. Esto es un error crítico en ingeniería de software, 
+ya que el compilador tendría múltiples interpretaciones semánticas para una misma línea de código.
 
 Caso Práctico: Evaluación de expresiones aritméticas sin jerarquía de precedencia.
   Gramática Original:
