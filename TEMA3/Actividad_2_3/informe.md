@@ -73,7 +73,8 @@ E' -> + T E' | ε
 Conclusión: El lenguaje generado es matemáticamente idéntico, pero el compilador ahora consume obligatoriamente el terminal (T) antes de iterar, previniendo el desbordamiento de memoria (Stack Overflow).
 
 1.3. Factorización por la Izquierda
-Concepto Teórico: Esta anomalía se presenta cuando dos o más reglas de producción de un mismo No Terminal comparten un prefijo común idéntico (A -> αβ1 | αβ2). En un analizador predictivo LL(1), el compilador evalúa un solo token hacia adelante (Lookahead). Al ver el prefijo común, el compilador entra en un estado de "no determinismo", incapaz de decidir qué regla aplicar.
+Concepto Teórico: Esta anomalía se presenta cuando dos o más reglas de producción de un mismo No Terminal comparten un prefijo común idéntico (A -> αβ1 | αβ2). En un analizador predictivo LL(1), el compilador evalúa
+un solo token hacia adelante (Lookahead). Al ver el prefijo común, el compilador entra en un estado de "no determinismo", incapaz de decidir qué regla aplicar.
 
 Caso Práctico (El problema del "Dangling Else"):
 Sentencia condicional en lenguajes estructurados.
@@ -97,6 +98,7 @@ Gramática Resultante Factorizada:
 S  -> if E then S S' | a
 S' -> else S | ε
 
-Conclusión: El analizador predictivo ahora procesa el bloque if con total seguridad. Solo al terminar, revisa el siguiente token: si encuentra un else, aplica la ruta de S'; si no, aplica el camino vacío (ε), resolviendo la ambigüedad estructural.
+Conclusión: El analizador predictivo ahora procesa el bloque if con total seguridad. Solo al terminar, revisa el siguiente token: si encuentra un else, aplica la ruta de S'; si no, aplica el camino vacío (ε),
+resolviendo la ambigüedad estructural.
 
 
