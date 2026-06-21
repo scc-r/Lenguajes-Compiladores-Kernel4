@@ -1,5 +1,5 @@
 
-# 🧹 Actividad 2.3: Higiene y Optimización de Gramáticas
+#  Actividad 2.3: Higiene y Optimización de Gramáticas
 **Desarrollado por:** [Rayc Yanez]
 
 2.3.1. Patologías de las Gramáticas
