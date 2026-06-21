@@ -1,12 +1,14 @@
-Markdown
+
 # 🧹 Actividad 2.3: Higiene y Optimización de Gramáticas
 **Desarrollado por:** [Rayc Yanez]
+
+2.3.1. Patologías de las Gramáticas
+Las gramáticas formales, aunque matemáticamente válidas para generar un lenguaje, pueden presentar "patologías" estructurales que imposibilitan su procesamiento automatizado por parte de un compilador. 
+A continuación, se demuestran y resuelven tres casos prácticos fundamentales.
 
 ## 1. Patologías de las Gramáticas Formales
 
 En el diseño de compiladores, no basta con que una gramática genere matemáticamente un lenguaje válido. Si la gramática presenta patologías estructurales, los analizadores sintácticos (especialmente los *parsers* descendentes o Top-Down como LL(1)) fallarán al procesar el código, generando bucles infinitos o árboles sintácticos contradictorios. A continuación, se demuestran y optimizan tres casos prácticos.
-
----
 
 ### 1.1. Gramática Ambigua
 
@@ -14,7 +16,7 @@ En el diseño de compiladores, no basta con que una gramática genere matemátic
 
 **Caso Práctico:** Evaluación de expresiones aritméticas sin jerarquía de precedencia.
 * **Gramática Original:**
-  ```ebnf
+  ebnf
   E -> E + E | E * E | id
 Demostración de Ambigüedad (Cadena: id + id * id):
 A continuación, se demuestra cómo el analizador puede construir dos árboles contradictorios para la misma cadena.
@@ -26,7 +28,7 @@ graph TD
     E1((E)) --> E2((E))
     E1 --> Op1((*))
     E1 --> E3((E))
-    
+   
     E2 --> E4((E))
     E2 --> Op2((+))
     E2 --> E5((E))
