@@ -23,7 +23,6 @@ A continuación, se demuestra cómo el analizador puede construir dos árboles c
 
 Árbol A: Evaluación incorrecta (Prioriza la suma)
 
-Code snippet
 graph TD
     E1((E)) --> E2((E))
     E1 --> Op1((*))
@@ -38,7 +37,6 @@ graph TD
     E3 --> id3(id)
 Árbol B: Evaluación correcta (Prioriza la multiplicación)
 
-Code snippet
 graph TD
     E1((E)) --> E2((E))
     E1 --> Op1((+))
@@ -60,7 +58,6 @@ Caso Práctico: Una gramática clásica para sumar términos.
 
 Gramática Patológica:
 
-EBNF
 E -> E + T | T
 
 Algoritmo de Eliminación:
@@ -72,7 +69,6 @@ El nuevo No Terminal A' manejará el sufijo α seguido de sí mismo, incluyendo 
 
 Gramática Resultante Optimizada:
 
-EBNF
 E  -> T E'
 E' -> + T E' | ε
 
@@ -86,7 +82,6 @@ Sentencia condicional en lenguajes estructurados.
 
 Gramática con No Determinismo:
 
-EBNF
 S -> if E then S | if E then S else S | a
 El prefijo común que bloquea al analizador es: if E then S.
 
@@ -100,7 +95,6 @@ El nuevo No Terminal (S') alojará los sufijos sobrantes.
 
 Gramática Resultante Factorizada:
 
-EBNF
 S  -> if E then S S' | a
 S' -> else S | ε
 
