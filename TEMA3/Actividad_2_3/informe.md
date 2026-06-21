@@ -1,6 +1,6 @@
 
 #  Actividad 2.3: Higiene y Optimización de Gramáticas
-**Desarrollado por:** [Rayc Yanez]
+**Desarrollado por:** Rayc Yanez
 
 2.3.1. Patologías de las Gramáticas
 Las gramáticas formales, aunque matemáticamente válidas para generar un lenguaje, pueden presentar "patologías" estructurales que imposibilitan su procesamiento automatizado por parte de un compilador. 
@@ -52,6 +52,7 @@ graph TD
     
     E4 --> id2(id)
     E5 --> id3(id)
+    
 1.2. Recursividad por la Izquierda
 Concepto Teórico: Ocurre cuando un No Terminal (A) puede derivar en una regla que comienza con el mismo No Terminal (A -> Aα). Esta patología colapsa a los analizadores descendentes (Descenso Recursivo), ya que el autómata entra en un bucle infinito intentando expandir A sin llegar a consumir nunca un símbolo terminal de la entrada.
 
@@ -61,6 +62,7 @@ Gramática Patológica:
 
 EBNF
 E -> E + T | T
+
 Algoritmo de Eliminación:
 Para una regla de la forma A -> Aα | β (donde β es la base no recursiva y α el sufijo recursivo):
 
@@ -73,6 +75,7 @@ Gramática Resultante Optimizada:
 EBNF
 E  -> T E'
 E' -> + T E' | ε
+
 Conclusión: El lenguaje generado es matemáticamente idéntico, pero el compilador ahora consume obligatoriamente el terminal (T) antes de iterar, previniendo el desbordamiento de memoria (Stack Overflow).
 
 1.3. Factorización por la Izquierda
@@ -100,4 +103,5 @@ Gramática Resultante Factorizada:
 EBNF
 S  -> if E then S S' | a
 S' -> else S | ε
+
 Conclusión: El analizador predictivo ahora procesa el bloque if con total seguridad. Solo al terminar, revisa el siguiente token: si encuentra un else, aplica la ruta de S'; si no, aplica el camino vacío (ε), resolviendo la ambigüedad estructural.
