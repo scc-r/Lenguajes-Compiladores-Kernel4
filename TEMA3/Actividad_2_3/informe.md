@@ -16,7 +16,7 @@ En el diseño de compiladores, no basta con que una gramática genere matemátic
 
 **Caso Práctico:** Evaluación de expresiones aritméticas sin jerarquía de precedencia.
 * **Gramática Original:**
-  ebnf
+
   E -> E + E | E * E | id
 Demostración de Ambigüedad (Cadena: id + id * id):
 A continuación, se demuestra cómo el analizador puede construir dos árboles contradictorios para la misma cadena.
