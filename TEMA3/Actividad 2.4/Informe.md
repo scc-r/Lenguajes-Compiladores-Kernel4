@@ -108,7 +108,19 @@ La siguiente matriz documenta el comportamiento determinístico del sistema. Si 
 | $* q_6$ | $q_E$ | $q_E$ | $q_E$ | $q_E$ | $q_E$ |
 | $q_E$ (Sumidero) | $q_E$ | $q_E$ | $q_E$ | $q_E$ | $q_E$ |
 
-### Diagrama de Estados
+### Diagrama de Estados y Frontera Semántica
 ![Diagrama AFD Ajedrez](./diagrama_afd_ajedrez.png)
 
-> **Nota Técnica sobre el Diagrama:** Para preservar la legibilidad gráfica del autómata, el estado sumidero ($q_E$) y sus aristas han sido omitidos del esquema. Se asume que cualquier arista faltante en un nodo conduce irrevocablemente al sumidero de error.
+> **Nota Técnica sobre el alcance del AFD:** Para preservar la legibilidad gráfica del autómata, el estado sumidero ($q_E$) ha sido omitido. Se asume implícitamente que cualquier transición no definida explícitamente conduce a $q_E$. La responsabilidad de este modelo es certificar la morfología estructural; las validaciones de coherencia espacial en el tablero corresponden a la fase de Análisis Semántico.
+
+**Ejemplo de Ejecución Paso a Paso:**
+A modo de demostración empírica, simularemos el recorrido del autómata al procesar la cadena `Bxc6` (El Alfil captura en la casilla c6):
+
+1. **Inicio:** El autómata arranca en el estado $q_0$.
+2. **Lectura de 'B':** El escáner clasifica el carácter 'B' dentro del grupo $P$ (Piezas). Según la función de transición $\delta(q_0, P)$, el autómata avanza al estado $q_1$.
+3. **Lectura de 'x':** Se lee el símbolo literal 'x', clasificado en el grupo $X$ (Captura). La transición $\delta(q_1, X)$ moviliza el sistema hacia el estado $q_3$.
+4. **Lectura de 'c':** El carácter 'c' pertenece al grupo $C$ (Columnas). La transición $\delta(q_3, C)$ dirige el flujo al estado $q_4$.
+5. **Lectura de '6':** El número '6' es clasificado en el grupo $F$ (Filas). La transición $\delta(q_4, F)$ lleva la máquina al estado $q_5$.
+6. **Fin de Cadena (EOF):** No hay más caracteres por leer. El sistema verifica su ubicación actual; como $q_5$ pertenece al conjunto de estados de aceptación ($F$), el analizador léxico dictamina un **Éxito** y valida la palabra computacionalmente.
+
+*Caso contrario (Error Léxico):* Si en el paso 3 el sistema hubiera leído un '9', este no pertenecería a ningún grupo válido del alfabeto esperado para ese estado, lo que invocaría una transición directa al estado sumidero ($q_E$), rechazando la cadena irrevocablemente.
