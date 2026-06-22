@@ -1,4 +1,6 @@
-Aquí el enlace de drive con el archivo DOC: https://docs.google.com/document/d/1T_ez43Aa_JTb-0GcJqnrSvgMz0cv7i2O9M88y8HI35k/edit?usp=sharing
+Aquí el enlace de drive con el archivo DOC y Vídeo: https://docs.google.com/document/d/1T_ez43Aa_JTb-0GcJqnrSvgMz0cv7i2O9M88y8HI35k/edit?usp=sharing
+
+https://drive.google.com/file/d/12YzsFrlvGvmwETpmIvI7QxNurKG7Tz1b/view?usp=drivesdk
 
 Sección 2.2.1: Derivación y Modelado (Caso Práctico: Dibujo con Genoma)
 El presente documento detalla la resolución de la actividad 2.2.1, enfocada en el diseño de una Gramática Libre de Contexto (GLC) que modela herramientas de dibujo bidimensionales. Para evitar ambigüedades en la interpretación, se ha estructurado una traza de ejecución paso a paso (derivación por la izquierda) donde se especifica la regla de producción aplicada y la semántica geométrica exacta de la acción del "trazador" (análogo a un gráfico de tortuga).
