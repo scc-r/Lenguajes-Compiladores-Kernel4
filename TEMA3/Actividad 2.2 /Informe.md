@@ -1,10 +1,3 @@
-UNIVERSIDAD NACIONAL EXPERIMENTAL DE GUAYANA
-VICERRECTORADO ACADÉMICO
-COORDINACIÓN DE INGENIERÍA EN INFORMÁTICA
-Asignatura: Lenguaje y Compiladores (Trimestre 2026-1)
-Profesor: Ing. Félix Márquez
-Alumno: Nelson Bueno
-
 Sección 2.2.1: Derivación y Modelado (Caso Práctico: Dibujo con Genoma)
 El presente documento detalla la resolución de la actividad 2.2.1, enfocada en el diseño de una Gramática Libre de Contexto (GLC) que modela herramientas de dibujo bidimensionales. Para evitar ambigüedades en la interpretación, se ha estructurado una traza de ejecución paso a paso (derivación por la izquierda) donde se especifica la regla de producción aplicada y la semántica geométrica exacta de la acción del "trazador" (análogo a un gráfico de tortuga).
 
