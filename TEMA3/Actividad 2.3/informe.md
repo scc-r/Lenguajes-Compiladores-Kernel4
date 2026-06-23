@@ -106,8 +106,3 @@ Gramática Resultante Factorizada:
 
     S  -> if E then S S' | a
     S' -> else S | ε
-
-### 💡 Actualización para tu Defensa en Video (Fase II):
-Al momento de grabar tu exposición frente a la cámara y compartir la pantalla de tu repositorio de GitHub, debes señalar específicamente los diagramas renderizados usando esta argumentación técnica:
-
-> *"Como pueden observar en la pantalla de nuestro repositorio, en la sección 1.1 demuestro visualmente la patología de la ambigüedad gramatical utilizando dos árboles de derivación jerárquica para la misma cadena exacta: `id + id * id`. El problema de diseño radica en que, al carecer de reglas de precedencia, el compilador puede generar el Árbol A, donde la suma queda abajo y la multiplicación se evalúa primero, o el Árbol B, donde la multiplicación queda en la raíz y la suma se evalúa antes. En ingeniería de compiladores, esto representa un fallo catastrófico, ya que el comportamiento semántico del software pasa a ser completamente ambiguo e impredecible en tiempo de ejecución."*
