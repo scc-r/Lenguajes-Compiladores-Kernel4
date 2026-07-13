@@ -1,0 +1,5 @@
+# Imagen base de Ubuntu
+FROM ubuntu:latest
+WORKDIR /app
+COPY . .
+RUN make

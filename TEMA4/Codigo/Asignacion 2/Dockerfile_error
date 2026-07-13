@@ -1,0 +1,4 @@
+FROM python:3.9
+# El simbolo de interrogacion no pertenece a la sintaxis esperada
+COPY ? /app
+RUN pip install -r requirements.txt
