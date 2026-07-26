@@ -1,0 +1,16 @@
+networks:
+  secure_vault:
+    internal: true
+    driver: bridge
+    labels:
+      env: "production"
+      security_level: "high"
+  vlan_external:
+    driver: macvlan
+    driver_opts:
+      parent: eth0.10
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
+          gateway: 192.168.10.1
+          

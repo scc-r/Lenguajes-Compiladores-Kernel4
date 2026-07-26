@@ -1,0 +1,10 @@
+networks:
+  swarm_global:
+    driver: overlay
+    attachable: true
+  proxy_net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: "1400"
+      com.docker.network.bridge.enable_icc: "false"
+      

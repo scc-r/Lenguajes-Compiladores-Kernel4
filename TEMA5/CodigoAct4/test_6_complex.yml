@@ -1,0 +1,18 @@
+networks:
+  global_hybrid_net:
+    driver: overlay
+    enable_ipv6: true
+    attachable: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.10.0.0/16
+          gateway: 10.10.0.1
+        - subnet: 2001:3984:3989::/64
+          gateway: 2001:3984:3989::1
+    labels:
+      project: "core_infrastructure"
+      department: "devops"
+    driver_opts:
+      encrypted: "true"
+      

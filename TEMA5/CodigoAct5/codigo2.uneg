@@ -1,0 +1,1 @@
+x = 10; y = 20; iff x < y print("menor") els print("mayor"); print z = 100

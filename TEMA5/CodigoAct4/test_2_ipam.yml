@@ -1,0 +1,12 @@
+networks:
+  api_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.238.0/24
+  cache_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.239.0/24
+        

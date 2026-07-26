@@ -1,0 +1,8 @@
+networks:
+  frontend_tier:
+    driver: bridge
+  backend_tier:
+    driver: bridge
+  database_tier:
+    driver: bridge
+    

@@ -1,0 +1,23 @@
+networks:
+  service_auth:
+    driver: bridge
+  service_users:
+    driver: bridge
+  service_payments:
+    driver: bridge
+  service_notifications:
+    driver: bridge
+  service_inventory:
+    driver: bridge
+  service_analytics:
+    driver: bridge
+  service_search:
+    driver: bridge
+  data_lake_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.50.0.0/16
+  message_broker_net:
+    driver: overlay
+    

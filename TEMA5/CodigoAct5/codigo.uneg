@@ -1,0 +1,1 @@
+pront x = 5; if x > 3 prnt(x) else prnt("no")
